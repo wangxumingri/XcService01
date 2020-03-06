@@ -5,8 +5,10 @@ import com.xuecheng.framework.domain.cms.request.QueryPageRequest;
 import com.xuecheng.framework.domain.cms.response.CmsCode;
 import com.xuecheng.framework.domain.cms.response.CmsPageResult;
 import com.xuecheng.framework.domain.cms.response.dto.SiteSelectDto;
+import com.xuecheng.framework.exception.ExceptionCast;
 import com.xuecheng.framework.model.response.CommonCode;
 import com.xuecheng.framework.model.response.QueryResult;
+import com.xuecheng.framework.model.response.ResultCode;
 import com.xuecheng.manage_cms.dao.CmsPageRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +69,7 @@ public class PageService {
     public CmsPageResult addPage(CmsPage cmsPage){
         CmsPageResult cmsPageResult = null;
         if (cmsPage == null){
-            return new CmsPageResult(CommonCode.FAIL,null);
+            ExceptionCast.cast(CommonCode.INVALIDPARAM);
         }
         CmsPage existingCmsPage = cmsPageRepository.findByPageNameAndPageWebPathAndSiteId(cmsPage.getPageName(), cmsPage.getPageWebPath(), cmsPage.getSiteId());
         if (existingCmsPage == null){
@@ -76,7 +78,7 @@ public class PageService {
             CmsPage newCmsPage = cmsPageRepository.save(cmsPage);
             cmsPageResult = new CmsPageResult(CommonCode.SUCCESS,newCmsPage);
         }else {
-            cmsPageResult = new CmsPageResult(CmsCode.CMS_ADDPAGE_EXISTSNAME,existingCmsPage);
+            ExceptionCast.cast(CmsCode.CMS_ADDPAGE_EXISTSNAME);
         }
 
         return cmsPageResult;
